@@ -1,3 +1,4 @@
+
 window.onload = function() {
     
     
@@ -10,15 +11,18 @@ function preload() {
 
     game.load.image('sky', 'assets/pics/sky.png');
     game.load.image('ground', 'assets/pics/platform.png');
-    game.load.image('star', 'assets/pics/b.png');
-    game.load.spritesheet('dude', 'assets/pics/index.png');
+    game.load.image('star', 'assets/pics/1.jpg');
+    game.load.spritesheet('dude', 'assets/pics/3.jpg');
 	game.load.audio('a', 'assets/5.mp3');
+	  game.load.spritesheet('e', 'assets/pics/index.png');
 
 }
 
 var player;
 var platforms;
 var cursors;
+var enemy;
+var enemy2;
 
 var stars;
 var score = 0;
@@ -80,14 +84,31 @@ function create() {
 
    
     player = game.add.sprite(32, game.world.height - 150, 'dude');
-	player.scale.setTo(0.2, 0.2);
+	player.scale.setTo(0.5, 0.5);
+	
+	enemy=game.add.sprite(0, 0, 'e');
+	enemy.scale.setTo(0.2, 0.2);
+	
+	enemy2=game.add.sprite(200, 200, 'e');
+	enemy2.scale.setTo(0.2, 0.2);
+	
 
    
     game.physics.arcade.enable(player);
+	  game.physics.arcade.enable(enemy);
+	  game.physics.arcade.enable(enemy2);
 
     player.body.bounce.y = 0.2;
     player.body.gravity.y = 300;
     player.body.collideWorldBounds = true;
+	
+	enemy.body.bounce.y = 0.2;
+    enemy.body.gravity.y = 300;
+    enemy.body.collideWorldBounds = true;
+	
+	enemy2.body.bounce.y = 0.2;
+    enemy2.body.gravity.y = 300;
+    enemy2.body.collideWorldBounds = true;
 
     
  
@@ -105,7 +126,7 @@ function create() {
    var rand = game.rnd.realInRange(100, 500);
         
         var star = stars.create(rand, rand, 'star');
-		star.scale.setTo(0.2, 0.2);
+		star.scale.setTo(0.3, 0.3);
 
         
 
@@ -121,7 +142,7 @@ function create() {
     
 
     
-    scoreText = game.add.text(16, 16, 'Collect the documents    Score: 0', { fontSize: '32px', fill: '#000' });
+    scoreText = game.add.text(16, 16, 'Collect the phones and dont get caught        Score: 0', { fontSize: '32px', fill: '#000' });
 
     cursors = game.input.keyboard.createCursorKeys();
 	
@@ -136,14 +157,20 @@ function update() {
 
     game.physics.arcade.collide(player, platforms);
     game.physics.arcade.collide(stars, platforms);
+	
+	game.physics.arcade.collide(enemy, platforms);
+		game.physics.arcade.collide(enemy2, platforms);
+  
 
     
     game.physics.arcade.overlap(player, stars, collectStar,collectStar2);
+	game.physics.arcade.overlap(player, enemy, collision);
+	game.physics.arcade.overlap(player, enemy2, collision2);
 
     
     player.body.velocity.x = 0;
 	if(score>90){
-		scoreText.text = 'GOOD JOB, YOU CAN GET HIRED NOW' ;
+		scoreText.text = 'GOOD JOB you can make a call now' ;
 		}
 	
 	
@@ -155,6 +182,12 @@ function update() {
     {
         
         player.body.velocity.x = -150;
+		
+		enemy.body.velocity.x=-200;
+		
+		
+		enemy2.body.velocity.x=200;
+
 
         
     }
@@ -162,6 +195,12 @@ function update() {
     {
         
         player.body.velocity.x = 150;
+		
+		enemy.body.velocity.x=200;
+		
+		
+		enemy2.body.velocity.x=-200;
+		
 
         
     }
@@ -169,6 +208,9 @@ function update() {
     {
         
         player.animations.stop();
+		
+		enemy.animations.stop();
+		enemy2.animations.stop();
 
         
     }
@@ -177,6 +219,12 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down)
     {
         player.body.velocity.y = -350;
+		
+		
+		enemy.body.velocity.y=-350;
+		
+		
+		enemy2.body.velocity.y=-350;
     }
 
 }
@@ -188,7 +236,7 @@ function collectStar (player, star) {
     star.kill();
 
     score += 10;
-    scoreText.text = 'Collect the documents     Score: ' + score;
+    scoreText.text = 'Collect the phones and dont get caught     Score: ' + score;
 
 }
 
@@ -204,7 +252,7 @@ function collectStar2 (player, star) {
    var rand = game.rnd.realInRange(100, 500);
        
         var star = stars.create(rand, rand, 'star');
-		star.scale.setTo(0.2, 0.2);
+		star.scale.setTo(0.3, 0.3);
 
         
 
@@ -218,5 +266,17 @@ function collectStar2 (player, star) {
   
    
    }
+function collision(player ,enemy){
+     player.kill();
+	 scoreText.text = 'Better luck next time' ;
+	 
+}
+
+function collision2(player ,enemy2){
+     player.kill();
+	 scoreText.text = 'Better luck next time' ;
+	 
+}
+
 
 };
